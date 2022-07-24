@@ -10,7 +10,7 @@ const restricted = async (req: NextApiRequest, res: NextApiResponse) => {
   if (session) {
     res.send({
       content:
-        'This is protected content. You can access this content because you are signed in.',
+        `Hello ${session.user?.name} with id ${session.user?.id} and email ${session.user?.email}! This is protected content. You can access this content because you are signed in.`,
     });
   } else {
     res.send({
