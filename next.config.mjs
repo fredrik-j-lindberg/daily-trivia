@@ -15,5 +15,15 @@ function defineNextConfig(config) {
 }
 
 export default defineNextConfig({
+  experimental: {
+    images: {
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: '**.googleusercontent.com',
+        },
+      ],
+    },
+  },
   reactStrictMode: true,
 });
