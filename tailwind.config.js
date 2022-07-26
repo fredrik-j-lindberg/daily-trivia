@@ -13,6 +13,7 @@ module.exports = {
         primary: colors.teal,
         secondary: colors.gray,
         accent: colors.amber,
+        link: colors.blue,
       },
     },
   },
