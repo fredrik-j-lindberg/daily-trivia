@@ -1,0 +1,162 @@
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { useEffect, useState } from 'react';
+import { NextPage } from 'next';
+import useDailyTrivia, { IAnswer, IQuestion } from '../hooks/useDailyTrivia';
+
+const MS_BEFORE_NEXT_QUESTION = 1500;
+
+// TODO: Add some kind of scoring system (how many 1, 2, 3 correct answers you have gotten?)
+// TODO: Add celebration animation when answering all 3 correctly
+// TODO: Add a way to go back to a previous question
+// TODO: Store user answered questions somewhere (only repeat questions not yet answered correctly?)
+// TODO: Simple logo somewhere?
+// TODO: Host somewhere
+
+const TriviaQuestion: NextPage = () => {
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const {
+    reachedEnd,
+    question,
+    correctAnswer,
+    isLoading,
+    answers,
+    submitAnswer,
+    clearAnswers,
+  } = useDailyTrivia({ questionIndex, gameLength: 3 });
+
+  useEffect(() => {
+    if (!answers.length) return;
+    const interval = setTimeout(() => {
+      setQuestionIndex((prev) => prev + 1);
+    }, MS_BEFORE_NEXT_QUESTION);
+    return () => clearInterval(interval);
+  }, [answers]);
+
+  console.log('### fredrik 1: question', {
+    questionIndex, question, isLoading, reachedEnd,
+  });
+
+  const resetTrivia = () => {
+    clearAnswers();
+    setQuestionIndex(0);
+  };
+
+  return (
+    <div className="mx-auto flex h-full flex-col pt-32 text-center text-secondary-100 lg:w-6/12">
+      <ProgressDots answers={answers} questionIndex={questionIndex} />
+      {!reachedEnd ? (
+        <Question
+          question={question}
+          submitAnswer={submitAnswer}
+          correctAnswer={correctAnswer}
+          loading={isLoading}
+          submittedAnswer={answers[questionIndex]?.answer}
+        />
+      ) : (
+        <div className="mx-auto w-11/12">
+          <h1 className="mb-4 text-xl">
+            You have finished all of today&apos;s questions!
+          </h1>
+          <Button label="Reset" onClick={resetTrivia} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ProgressDots = ({ answers, questionIndex }: {
+  answers: IAnswer[],
+  questionIndex: number
+}) => {
+  const getColorClass = (answerInfo?: IAnswer) => {
+    if (!answerInfo || !answerInfo.answer) return 'bg-secondary-400'; // Unanswered question
+    if (answerInfo.isCorrect) return 'bg-primary-500';
+    return 'bg-red-400';
+  };
+
+  return (
+    <div className="mb-2 flex justify-center gap-1">
+      {[...Array(3)].map((_, i) => {
+        const isCurrent = i === questionIndex;
+        return (
+          <div
+            key={answers[i]?.question.question || i}
+            className={`
+        ${getColorClass(answers[i])} 
+        ${isCurrent && 'border-2 border-white'}
+        mb-2 h-8 w-8 rounded-full`}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+interface QuestionProps {
+  question: IQuestion | undefined;
+  submitAnswer: (answer: string) => void;
+  correctAnswer: string | undefined,
+  loading: boolean;
+  submittedAnswer?: string;
+}
+const Question = ({
+  question, submitAnswer, correctAnswer, loading, submittedAnswer,
+}: QuestionProps) => (
+  <div className="mx-auto w-11/12">
+    <h1 className={`mb-4 text-xl ${loading && 'text-secondary-500'}`}>
+      {loading
+        ? 'Loading question...'
+        : question?.question}
+    </h1>
+    <div className="flex flex-col items-center justify-center gap-2 align-middle md:grid md:grid-cols-2">
+      {loading
+        ? new Array(4).fill(null).map((_, index) => <Button key={index} />)
+        : question?.options?.map(({ value: option }, index) => {
+          let color;
+          let handleOnClick: typeof submitAnswer | undefined = submitAnswer;
+          if (submittedAnswer) {
+            const alternativeWasSubmitted = submittedAnswer === option;
+            const alternativeIsCorrect = correctAnswer === option;
+            color = alternativeWasSubmitted ? 'bg-red-400' : 'bg-secondary-200';
+            color = alternativeIsCorrect ? 'bg-primary-500' : color;
+            handleOnClick = undefined;
+          }
+          return (
+            <Button label={option} onClick={handleOnClick} color={color} key={index} />
+          );
+        })}
+    </div>
+  </div>
+);
+Question.defaultProps = {
+  submittedAnswer: null,
+};
+
+const Button = ({ label, onClick, color }: {
+  label?: string,
+  onClick?: (buttonLabel: string) => void,
+  color?: string
+}) => (
+  <div className="h-full text-lg leading-none">
+    {!label
+      ? <Skeleton className="h-full p-4" highlightColor="lightgray" />
+      : (
+        <button
+          className={`${color || 'bg-cyan-600 hover:brightness-110'} h-full w-full rounded-lg p-4 text-white transition-colors duration-300`}
+          type="button"
+          onClick={() => onClick?.(label)}
+          disabled={!onClick}
+        >
+          {label}
+        </button>
+      )}
+  </div>
+);
+Button.defaultProps = {
+  label: null,
+  onClick: null,
+  color: null,
+};
+
+export default TriviaQuestion;
