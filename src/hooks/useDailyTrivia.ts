@@ -22,12 +22,14 @@ interface IUseTriviaQuestionProps {
 const useDailyTrivia = (options: IUseTriviaQuestionProps) => {
   const [answers, setAnswers] = useState<IAnswer[]>([]);
 
-  const { data: question, isLoading } = useQuestionQuery(options, answers);
+  const { data: question, isLoading, prefetchNext } = useQuestionQuery(options, answers);
   const { value: correctAnswer } = question?.options.find((option) => option.isCorrect) || {};
 
   const submitAnswer = (answer: string) => {
     const answerObject = buildAnswerObject(question as IQuestion, answer, (answer === correctAnswer) as boolean);
+    const wasLastQuestion = answers.length === options.gameLength - 1;
     setAnswers((prev) => [...prev, answerObject]);
+    if (!wasLastQuestion) return prefetchNext();
   };
 
   const clearAnswers = () => {
@@ -55,7 +57,12 @@ const useQuestionQuery = ({
     cacheTime: 30 * 60 * 1000, // Cache for 30 minutes (makes it fast to jump between questions)
     enabled: answers.length < gameLength, // Don't fetch new question if we have reached the end
   };
-  return trpc.proxy.trivia.question.get.useQuery({ category, difficulty, questionIndex }, options as any);
+  const query = trpc.proxy.trivia.question.get.useQuery({ category, difficulty, questionIndex }, options as any);
+  const utils = trpc.proxy.useContext();
+  const prefetchNext = () => utils.trivia.question.get.prefetch({
+    category, difficulty, questionIndex: questionIndex + 1,
+  }, options as any);
+  return { ...query, prefetchNext };
 };
 
 const getCacheKey = ({ questionIndex, category = categories.generalKnowledge, difficulty = null }: any) => {
