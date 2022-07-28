@@ -17,6 +17,13 @@ export const trpc = setupTRPC<AppRouter>({
     return {
       url: `${getBaseUrl()}/api/trpc`,
       transformer: superjson,
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+          },
+        },
+      },
     };
   },
   ssr: false,
