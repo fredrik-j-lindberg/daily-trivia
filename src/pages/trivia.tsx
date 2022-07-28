@@ -23,6 +23,7 @@ const TriviaQuestion: NextPage = () => {
     answers,
     submitAnswer,
     clearAnswers,
+    userStatsQuery,
   } = useDailyTrivia({ questionIndex, gameLength: 3 });
 
   useEffect(() => {
@@ -58,6 +59,19 @@ const TriviaQuestion: NextPage = () => {
           <h1 className="mb-4 text-xl">
             You have finished all of today&apos;s questions!
           </h1>
+          { userStatsQuery.isLoading
+            ? <div>Loading..</div>
+            : (
+              <>
+                <div>Played: {userStatsQuery.data?.timesPlayed}</div>
+                <div>Streak: {userStatsQuery.data?.streak}</div>
+                <div>Max Streak: {userStatsQuery.data?.maxStreak}</div>
+                <div>One Correct: {userStatsQuery.data?.correct_1}</div>
+                <div>Two Correct: {userStatsQuery.data?.correct_2}</div>
+                <div>Three Correct: {userStatsQuery.data?.correct_3}</div>
+                <div>Last Played: {userStatsQuery.data?.lastPlayed.toISOString()}</div>
+              </>
+            )}
           <Button label="Reset" onClick={resetTrivia} />
         </div>
       )}

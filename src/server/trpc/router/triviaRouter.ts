@@ -1,4 +1,5 @@
 import { Question, QuestionOption } from '@prisma/client';
+import { isToday, isYesterday } from 'date-fns';
 import { z } from 'zod';
 import TriviaClient from '../../../http/TriviaClient';
 import { t } from '../utils';
@@ -33,6 +34,51 @@ const questionRouter = t.router({
     }),
 });
 
+const userRouter = t.router({
+  getStats: t.procedure
+    .input(z.object({ userId: z.string() }))
+    .query(({ ctx, input }) => ctx.prisma.triviaStats.findFirst({
+      where: { userId: input.userId },
+    })),
+  addResult: t.procedure
+    .input(z.object({ userId: z.string(), correctAnswers: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const stats = await ctx.prisma.triviaStats.findFirst({
+        where: { userId: input.userId },
+      });
+
+      const streakIncrement = (input.correctAnswers && 1) || 0;
+      const correctAnswersField = `correct_${input.correctAnswers}` as keyof typeof stats;
+      if (!stats) {
+        return ctx.prisma.triviaStats.create({
+          data: {
+            userId: input.userId,
+            [correctAnswersField]: 1,
+            streak: streakIncrement,
+            maxStreak: streakIncrement,
+            timesPlayed: 1,
+            lastPlayed: new Date(),
+          },
+        });
+      }
+
+      if (isToday(stats.lastPlayed)) return; // Do not track the same user's stats if they play again
+      const playedYesterday = isYesterday(stats.lastPlayed);
+      const streak = playedYesterday && streakIncrement ? stats.streak + streakIncrement : streakIncrement;
+      return ctx.prisma.triviaStats.update({
+        where: { userId: input.userId },
+        data: {
+          [correctAnswersField]: stats[correctAnswersField] + 1,
+          streak,
+          maxStreak: Math.max(streak, stats.maxStreak),
+          timesPlayed: stats.timesPlayed + 1,
+          lastPlayed: new Date(),
+        },
+      });
+    }),
+});
+
 export const triviaRouter = t.router({
   question: questionRouter,
+  user: userRouter,
 });

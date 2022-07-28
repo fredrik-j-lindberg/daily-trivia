@@ -36,6 +36,20 @@ model QuestionOption {
     @@unique([questionId, value])
 }
 
+model TriviaStats {
+    userId      String   @id @unique
+    correct_0   Int      @default(0)
+    correct_1   Int      @default(0)
+    correct_2   Int      @default(0)
+    correct_3   Int      @default(0)
+    timesPlayed Int      @default(0)
+    streak      Int      @default(0)
+    maxStreak   Int      @default(0)
+    lastPlayed  DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -64,13 +78,14 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String       @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?      @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    triviaStats   TriviaStats?
 }
 
 model VerificationToken {

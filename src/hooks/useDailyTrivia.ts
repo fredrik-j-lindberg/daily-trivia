@@ -22,6 +22,14 @@ interface IUseTriviaQuestionProps {
 const useDailyTrivia = (options: IUseTriviaQuestionProps) => {
   const [answers, setAnswers] = useState<IAnswer[]>([]);
 
+  const { data: session } = trpc.proxy.auth.getSession.useQuery();
+  const userId = session?.user?.id;
+  const userStatsQuery = trpc.proxy.trivia.user.getStats.useQuery(
+    { userId: userId as string },
+    { enabled: false }, // Only relevant post-game, triggered manually via "refetch"
+  );
+
+  const { mutateAsync: addResult } = trpc.proxy.trivia.user.addResult.useMutation();
   const { data: question, isLoading, prefetchNext } = useQuestionQuery(options, answers);
   const { value: correctAnswer } = question?.options.find((option) => option.isCorrect) || {};
 
@@ -30,6 +38,17 @@ const useDailyTrivia = (options: IUseTriviaQuestionProps) => {
     const wasLastQuestion = answers.length === options.gameLength - 1;
     setAnswers((prev) => [...prev, answerObject]);
     if (!wasLastQuestion) return prefetchNext();
+
+    const runPostGameActions = async () => {
+      if (userId) {
+        await addResult({
+          correctAnswers: [...answers, answerObject].filter(({ isCorrect }) => isCorrect).length,
+          userId,
+        });
+        userStatsQuery.refetch(); // Trigger the userStatsQuery
+      }
+    };
+    runPostGameActions();
   };
 
   const clearAnswers = () => {
@@ -42,6 +61,7 @@ const useDailyTrivia = (options: IUseTriviaQuestionProps) => {
     correctAnswer,
     isLoading,
     answers,
+    userStatsQuery,
     submitAnswer,
     clearAnswers,
   };
@@ -59,9 +79,12 @@ const useQuestionQuery = ({
   };
   const query = trpc.proxy.trivia.question.get.useQuery({ category, difficulty, questionIndex }, options as any);
   const utils = trpc.proxy.useContext();
-  const prefetchNext = () => utils.trivia.question.get.prefetch({
-    category, difficulty, questionIndex: questionIndex + 1,
-  }, options as any);
+  const prefetchNext = () => {
+    console.log('### fredrik: prefetching');
+    return utils.trivia.question.get.prefetch({
+      category, difficulty, questionIndex: questionIndex + 1,
+    }, options as any);
+  };
   return { ...query, prefetchNext };
 };
 
