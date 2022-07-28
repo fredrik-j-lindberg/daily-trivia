@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UseQueryOptions } from 'react-query';
 import { categories } from '../http/TriviaClient';
 import { IQuestion } from '../server/trpc/router/triviaRouter';
@@ -28,15 +28,30 @@ const useDailyTrivia = (options: IUseTriviaQuestionProps) => {
     { userId: userId as string },
     { enabled: false }, // Only relevant post-game, triggered manually via "refetch"
   );
+  const { data: storedQuestions } = trpc.proxy.trivia.question.getAll.useQuery();
+  const { data: userAnswers } = trpc.proxy.trivia.user.getAnswers.useQuery(
+    { userId: userId as string },
+    { enabled: !!userId },
+  );
 
+  const { mutate: storeAnswer } = trpc.proxy.trivia.question.submitAnswer.useMutation();
   const { mutateAsync: addResult } = trpc.proxy.trivia.user.addResult.useMutation();
   const { data: question, isLoading, prefetchNext } = useQuestionQuery(options, answers);
   const { value: correctAnswer } = question?.options.find((option) => option.isCorrect) || {};
+
+  useEffect(() => {
+    console.log('### fredrik: storedQuestions changed', storedQuestions);
+  }, [storedQuestions]);
+
+  useEffect(() => {
+    console.log('### fredrik: userAnswers changed', userAnswers);
+  }, [userAnswers]);
 
   const submitAnswer = (answer: string) => {
     const answerObject = buildAnswerObject(question as IQuestion, answer, (answer === correctAnswer) as boolean);
     const wasLastQuestion = answers.length === options.gameLength - 1;
     setAnswers((prev) => [...prev, answerObject]);
+    if (session?.user?.id) storeAnswer({ answer: answerObject, userId: session.user.id });
     if (!wasLastQuestion) return prefetchNext();
 
     const runPostGameActions = async () => {

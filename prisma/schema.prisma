@@ -23,6 +23,7 @@ model Question {
     insertedAt DateTime @default(now())
 
     options QuestionOption[]
+    answers QuestionAnswer[]
 }
 
 model QuestionOption {
@@ -34,6 +35,17 @@ model QuestionOption {
     question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
     @@unique([questionId, value])
+}
+
+model QuestionAnswer {
+    id         String   @id @default(cuid())
+    userId     String
+    questionId String
+    answer     String
+    isCorrect  Boolean
+    insertedAt DateTime @default(now())
+    user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model TriviaStats {
@@ -78,14 +90,15 @@ model Session {
 }
 
 model User {
-    id            String       @id @default(cuid())
-    name          String?
-    email         String?      @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    triviaStats   TriviaStats?
+    id              String           @id @default(cuid())
+    name            String?
+    email           String?          @unique
+    emailVerified   DateTime?
+    image           String?
+    accounts        Account[]
+    sessions        Session[]
+    questionAnswers QuestionAnswer[]
+    triviaStats     TriviaStats?
 }
 
 model VerificationToken {

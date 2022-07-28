@@ -7,7 +7,29 @@ import { t } from '../utils';
 const triviaClient = new TriviaClient();
 export type IQuestion = Question & { options: QuestionOption[] };
 
+const questionOptionSchema = z.object({
+  id: z.string(),
+  questionId: z.string(),
+  value: z.string(),
+  isCorrect: z.boolean(),
+});
+
+const questionSchema = z.object({
+  id: z.string(),
+  question: z.string(),
+  difficulty: z.string().nullable(),
+  category: z.string().nullable(),
+  type: z.string().nullable(),
+  insertedAt: z.date(),
+  options: z.array(questionOptionSchema),
+});
+
+const answerSchema = z.object({
+  answer: z.string(), isCorrect: z.boolean(), question: questionSchema,
+});
+
 const questionRouter = t.router({
+  getAll: t.procedure.query(({ ctx }) => ctx.prisma.question.findMany()),
   get: t.procedure
     .input(z.object({
       difficulty: z.union([z.string(), z.undefined()]),
@@ -32,6 +54,16 @@ const questionRouter = t.router({
         },
       });
     }),
+  submitAnswer: t.procedure
+    .input(z.object({ answer: answerSchema, userId: z.string() }))
+    .mutation(({ ctx, input }) => ctx.prisma.questionAnswer.create({
+      data: {
+        answer: input.answer.answer,
+        isCorrect: input.answer.isCorrect,
+        questionId: input.answer.question.id,
+        userId: input.userId,
+      },
+    })),
 });
 
 const userRouter = t.router({
@@ -39,6 +71,12 @@ const userRouter = t.router({
     .input(z.object({ userId: z.string() }))
     .query(({ ctx, input }) => ctx.prisma.triviaStats.findFirst({
       where: { userId: input.userId },
+    })),
+  getAnswers: t.procedure
+    .input(z.object({ userId: z.string() }))
+    .query(({ ctx, input }) => ctx.prisma.questionAnswer.findMany({
+      where: { userId: input.userId },
+      include: { question: true },
     })),
   addResult: t.procedure
     .input(z.object({ userId: z.string(), correctAnswers: z.number() }))
