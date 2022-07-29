@@ -17,13 +17,13 @@ const Home: NextPage = () => {
       </p>
       <div className="mt-3 grid gap-3 pt-3 text-center md:grid-cols-2 lg:w-2/3">
         <NavigationButton
-          name="Trivia"
-          description="Your daily trivia questions"
+          title="Trivia"
+          subTitle="Your daily trivia questions"
           href="/trivia"
         />
         <NavigationButton
-          name="Geography"
-          description="Your daily geography questions"
+          title="Geography"
+          subTitle="Your daily geography questions"
           href="/geo"
         />
       </div>

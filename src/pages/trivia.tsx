@@ -72,7 +72,7 @@ const TriviaQuestion: NextPage = () => {
                 <div>Last Played: {userStatsQuery.data?.lastPlayed.toISOString()}</div>
               </>
             )}
-          <Button label="Reset" onClick={resetTrivia} />
+          <Button title="Reset" onClick={resetTrivia} />
         </div>
       )}
     </div>
@@ -137,7 +137,7 @@ const Question = ({
             handleOnClick = undefined;
           }
           return (
-            <Button label={option} onClick={handleOnClick} color={color} key={index} />
+            <Button title={option} onClick={handleOnClick} color={color} key={index} />
           );
         })}
     </div>
