@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
+import { NavigationButton } from '../components/Buttons';
 import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
@@ -16,12 +16,12 @@ const Home: NextPage = () => {
         What are you in the mood for today?
       </p>
       <div className="mt-3 grid gap-3 pt-3 text-center md:grid-cols-2 lg:w-2/3">
-        <ActionButton
+        <NavigationButton
           name="Trivia"
           description="Your daily trivia questions"
           href="/trivia"
         />
-        <ActionButton
+        <NavigationButton
           name="Geography"
           description="Your daily geography questions"
           href="/geo"
@@ -42,22 +42,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-interface ActionButtonProps {
-  name: string;
-  description: string;
-  href: string;
-}
-
-const ActionButton = ({
-  name,
-  description,
-  href,
-}: ActionButtonProps) => (
-  <Link href={href}>
-    <section className="flex cursor-pointer flex-col justify-center rounded border-2 border-white bg-accent-200 p-6 shadow-xl duration-500 hover:bg-accent-300 motion-safe:hover:scale-105">
-      <h2 className="text-lg text-gray-700">{name}</h2>
-      <p className="text-sm text-gray-600">{description}</p>
-    </section>
-  </Link>
-);

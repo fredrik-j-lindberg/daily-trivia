@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Skeleton from 'react-loading-skeleton';
 
 export const Button = ({ label, onClick, color }: {
@@ -25,3 +26,20 @@ Button.defaultProps = {
   onClick: null,
   color: null,
 };
+
+export const NavigationButton = ({
+  name,
+  description,
+  href,
+}: {
+  name: string,
+  description: string,
+  href: string
+}) => (
+  <Link href={href}>
+    <section className="flex cursor-pointer flex-col justify-center rounded border-2 border-white bg-accent-200 p-6 shadow-xl duration-500 hover:bg-accent-300 motion-safe:hover:scale-105">
+      <h2 className="text-lg text-gray-700">{name}</h2>
+      <p className="text-sm text-gray-600">{description}</p>
+    </section>
+  </Link>
+);
