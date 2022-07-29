@@ -1,6 +1,9 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useEffect, useState } from 'react';
 import { NextPage } from 'next';
+import { UseQueryResult } from 'react-query';
+import { TriviaStats } from '@prisma/client';
+import { DefaultErrorShape } from '@trpc/server';
 import useDailyTrivia, { IAnswer, IQuestion } from '../hooks/useDailyTrivia';
 import { Button } from '../components/Buttons';
 
@@ -55,25 +58,7 @@ const TriviaQuestion: NextPage = () => {
           submittedAnswer={answers[questionIndex]?.answer}
         />
       ) : (
-        <div className="mx-auto w-11/12">
-          <h1 className="mb-4 text-xl">
-            You have finished all of today&apos;s questions!
-          </h1>
-          { userStatsQuery.isLoading
-            ? <div>Loading..</div>
-            : (
-              <>
-                <div>Played: {userStatsQuery.data?.timesPlayed}</div>
-                <div>Streak: {userStatsQuery.data?.streak}</div>
-                <div>Max Streak: {userStatsQuery.data?.maxStreak}</div>
-                <div>One Correct: {userStatsQuery.data?.correct_1}</div>
-                <div>Two Correct: {userStatsQuery.data?.correct_2}</div>
-                <div>Three Correct: {userStatsQuery.data?.correct_3}</div>
-                <div>Last Played: {userStatsQuery.data?.lastPlayed.toISOString()}</div>
-              </>
-            )}
-          <Button title="Reset" onClick={resetTrivia} />
-        </div>
+        <EndScreen userStatsQuery={userStatsQuery} resetTrivia={resetTrivia} />
       )}
     </div>
   );
@@ -146,5 +131,30 @@ const Question = ({
 Question.defaultProps = {
   submittedAnswer: null,
 };
+
+const EndScreen = ({ userStatsQuery, resetTrivia }: {
+  userStatsQuery: UseQueryResult<TriviaStats | null, DefaultErrorShape>;
+  resetTrivia: () => void;
+}) => (
+  <div className="mx-auto w-11/12">
+    <h1 className="mb-4 text-xl">
+      You have finished all of today&apos;s questions!
+    </h1>
+    { userStatsQuery.isLoading
+      ? <div>Loading..</div>
+      : (
+        <>
+          <div>Played: {userStatsQuery.data?.timesPlayed}</div>
+          <div>Streak: {userStatsQuery.data?.streak}</div>
+          <div>Max Streak: {userStatsQuery.data?.maxStreak}</div>
+          <div>One Correct: {userStatsQuery.data?.correct_1}</div>
+          <div>Two Correct: {userStatsQuery.data?.correct_2}</div>
+          <div>Three Correct: {userStatsQuery.data?.correct_3}</div>
+          <div>Last Played: {userStatsQuery.data?.lastPlayed.toISOString()}</div>
+        </>
+      )}
+    <Button title="Reset" onClick={resetTrivia} />
+  </div>
+);
 
 export default TriviaQuestion;
