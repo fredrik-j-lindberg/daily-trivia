@@ -8,9 +8,9 @@ const Home: NextPage = () => {
   const session = sessionQuery.data;
 
   return (
-    <div className="m-auto flex w-full flex-col items-center text-center text-secondary-100">
+    <div className="m-auto flex w-full flex-col items-center text-center text-white">
       <h1 className="mb-2 text-5xl font-extrabold leading-none md:text-[5rem]">
-        Hello{session && <span className="text-primary-300"> {session.user?.name}</span>}!
+        Hello{session && <span className="text-accent"> {session.user?.name}</span>}!
       </h1>
       <p className="text-2xl">
         What are you in the mood for today?

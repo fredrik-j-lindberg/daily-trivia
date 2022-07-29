@@ -44,7 +44,7 @@ const TriviaQuestion: NextPage = () => {
   };
 
   return (
-    <div className="mx-auto flex h-full flex-col pt-32 text-center text-secondary-100 lg:w-6/12">
+    <div className="mx-auto flex h-full w-full flex-col pt-4 text-center text-white md:pt-16 lg:w-6/12">
       <ProgressDots answers={answers} questionIndex={questionIndex} />
       {!reachedEnd ? (
         <Question
@@ -84,9 +84,9 @@ const ProgressDots = ({ answers, questionIndex }: {
   questionIndex: number
 }) => {
   const getColorClass = (answerInfo?: IAnswer) => {
-    if (!answerInfo || !answerInfo.answer) return 'bg-secondary-400'; // Unanswered question
-    if (answerInfo.isCorrect) return 'bg-primary-500';
-    return 'bg-red-400';
+    if (!answerInfo || !answerInfo.answer) return 'bg-neutral'; // Unanswered question
+    if (answerInfo.isCorrect) return 'bg-correct';
+    return 'bg-incorrect';
   };
 
   return (
@@ -118,7 +118,7 @@ const Question = ({
   question, submitAnswer, correctAnswer, loading, submittedAnswer,
 }: QuestionProps) => (
   <div className="mx-auto w-11/12">
-    <h1 className={`mb-4 text-xl ${loading && 'text-secondary-500'}`}>
+    <h1 className={`mb-4 text-xl ${loading && 'text-gray-400'}`}>
       {loading
         ? 'Loading question...'
         : question?.question}
@@ -132,8 +132,8 @@ const Question = ({
           if (submittedAnswer) {
             const alternativeWasSubmitted = submittedAnswer === option;
             const alternativeIsCorrect = correctAnswer === option;
-            color = alternativeWasSubmitted ? 'bg-red-400' : 'bg-secondary-200';
-            color = alternativeIsCorrect ? 'bg-primary-500' : color;
+            color = alternativeWasSubmitted ? 'bg-incorrect' : 'bg-neutral';
+            color = alternativeIsCorrect ? 'bg-correct' : color;
             handleOnClick = undefined;
           }
           return (

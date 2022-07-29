@@ -11,7 +11,7 @@ export const Button = ({ label, onClick, color }: {
       ? <Skeleton className="h-full p-4" highlightColor="lightgray" />
       : (
         <button
-          className={`${color || 'bg-cyan-600 hover:brightness-110'} h-full w-full rounded-lg p-4 text-white transition-colors duration-300`}
+          className={`${color || 'bg-action-regular hover:bg-action-hover motion-safe:hover:scale-[1.02]'} h-full w-full rounded p-4 font-semibold text-black transition-all duration-300`}
           type="button"
           onClick={() => onClick?.(label)}
           disabled={!onClick}
@@ -37,9 +37,12 @@ export const NavigationButton = ({
   href: string
 }) => (
   <Link href={href}>
-    <section className="flex cursor-pointer flex-col justify-center rounded border-2 border-white bg-accent-200 p-6 shadow-xl duration-500 hover:bg-accent-300 motion-safe:hover:scale-105">
-      <h2 className="text-lg text-gray-700">{name}</h2>
+    <button
+      type="button"
+      className="flex cursor-pointer flex-col justify-center rounded bg-action-regular p-6 shadow-xl duration-500 hover:bg-action-hover motion-safe:hover:scale-[1.02]"
+    >
+      <h2 className="text-lg font-semibold text-gray-700">{name}</h2>
       <p className="text-sm text-gray-600">{description}</p>
-    </section>
+    </button>
   </Link>
 );
