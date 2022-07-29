@@ -15,6 +15,7 @@
     "@typescript-eslint/no-use-before-define": "off",
     "consistent-return": "off",
     "react/no-array-index-key": "off", // Consider turning on to avoid unnecessary renders
+    "@typescript-eslint/member-delimiter-style": "error",
 
     "@typescript-eslint/no-unused-vars": [
       "error",

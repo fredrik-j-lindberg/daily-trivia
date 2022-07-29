@@ -80,8 +80,8 @@ const TriviaQuestion: NextPage = () => {
 };
 
 const ProgressDots = ({ answers, questionIndex }: {
-  answers: IAnswer[],
-  questionIndex: number
+  answers: IAnswer[];
+  questionIndex: number;
 }) => {
   const getColorClass = (answerInfo?: IAnswer) => {
     if (!answerInfo || !answerInfo.answer) return 'bg-neutral'; // Unanswered question
@@ -110,7 +110,7 @@ const ProgressDots = ({ answers, questionIndex }: {
 interface QuestionProps {
   question: IQuestion | undefined;
   submitAnswer: (answer: string) => void;
-  correctAnswer: string | undefined,
+  correctAnswer: string | undefined;
   loading: boolean;
   submittedAnswer?: string;
 }

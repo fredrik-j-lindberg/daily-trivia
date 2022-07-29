@@ -2,7 +2,7 @@ export default class HttpClient {
   baseUrl: string;
 
   constructor({ baseUrl }: {
-    baseUrl: string
+    baseUrl: string;
   }) {
     this.baseUrl = baseUrl;
   }

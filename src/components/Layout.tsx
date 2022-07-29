@@ -38,8 +38,8 @@ const Navbar = () => {
 };
 
 const BurgerMenu = ({ setIsOpen, isOpen }: {
-  setIsOpen: (isOpen: boolean) => void,
-  isOpen: boolean,
+  setIsOpen: (isOpen: boolean) => void;
+  isOpen: boolean;
 }) => (
   <button type="button" className="flex aspect-square h-full items-center justify-center rounded-md bg-action-regular text-gray-800 focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
     <span className="sr-only">Open main menu</span>

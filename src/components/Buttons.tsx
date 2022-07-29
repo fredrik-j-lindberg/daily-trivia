@@ -5,11 +5,11 @@ import Skeleton from 'react-loading-skeleton';
 export const Button = ({
   title, subTitle, onClick, color, disabled,
 }: {
-  title?: string,
-  subTitle?: string,
-  onClick?: (event: MouseEvent, title: string) => void,
-  color?: string
-  disabled?: boolean
+  title?: string;
+  subTitle?: string;
+  onClick?: (event: MouseEvent, title: string) => void;
+  color?: string;
+  disabled?: boolean;
 }) => (
   <div className="h-full w-full text-lg leading-none">
     {!title
@@ -41,10 +41,10 @@ export const NavigationButton = ({
   href,
   disabled,
 }: {
-  title: string,
-  subTitle: string,
-  href: string
-  disabled?: boolean
+  title: string;
+  subTitle: string;
+  href: string;
+  disabled?: boolean;
 }) => (
   <Link href={href}>
     <Button title={title} subTitle={subTitle} disabled={disabled} color={(disabled && 'bg-disabled') || undefined} />
