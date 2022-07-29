@@ -15,6 +15,7 @@ module.exports = {
           regular: colors.amber[200],
           hover: colors.amber[300],
         },
+        disabled: colors.gray[400],
         neutral: colors.gray[400],
         correct: colors.teal[400],
         incorrect: colors.red[400],

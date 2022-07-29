@@ -23,8 +23,9 @@ const Home: NextPage = () => {
         />
         <NavigationButton
           title="Geography"
-          subTitle="Your daily geography questions"
+          subTitle="Coming soon!"
           href="/geo"
+          disabled
         />
       </div>
       {!session && !sessionQuery.isLoading && (
