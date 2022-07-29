@@ -128,7 +128,7 @@ const Question = ({
         ? new Array(4).fill(null).map((_, index) => <Button key={index} />)
         : question?.options?.map(({ value: option }, index) => {
           let color;
-          let handleOnClick: typeof submitAnswer | undefined = submitAnswer;
+          let handleOnClick: any = (_: any, title: string) => submitAnswer(title);
           if (submittedAnswer) {
             const alternativeWasSubmitted = submittedAnswer === option;
             const alternativeIsCorrect = correctAnswer === option;
