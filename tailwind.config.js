@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       height: {
-        0.6: '0.15rem',
+        0.8: '0.2rem',
       },
       colors: {
         background: colors.gray[800],
