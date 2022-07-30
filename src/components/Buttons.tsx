@@ -11,7 +11,7 @@ export const Button = ({
   color?: string;
   disabled?: boolean;
 }) => (
-  <div className="h-full w-full text-lg leading-none">
+  <div className="w-full text-lg leading-none">
     {!title
       ? <Skeleton className="h-full p-4" highlightColor="lightgray" />
       : (
@@ -42,7 +42,7 @@ export const NavigationButton = ({
   disabled,
 }: {
   title: string;
-  subTitle: string;
+  subTitle?: string;
   href: string;
   disabled?: boolean;
 }) => (
@@ -52,4 +52,5 @@ export const NavigationButton = ({
 );
 NavigationButton.defaultProps = {
   disabled: false,
+  subTitle: null,
 };

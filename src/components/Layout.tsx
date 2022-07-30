@@ -3,7 +3,9 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import useClickOutside from '../hooks/useClickOutside';
 import { trpc } from '../utils/trpc';
+import { NavigationButton } from './Buttons';
 
 const Layout = ({ children }: { children: any }) => (
   <>
@@ -40,19 +42,46 @@ const Navbar = () => {
 const BurgerMenu = ({ setIsOpen, isOpen }: {
   setIsOpen: (isOpen: boolean) => void;
   isOpen: boolean;
-}) => (
-  <button type="button" className="flex aspect-square h-full items-center justify-center rounded-md bg-action-regular text-gray-800 focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
-    <span className="sr-only">Open main menu</span>
-    <div className="relative w-4/6">
-      <BurgerLine animationClass={isOpen ? 'rotate-45' : '-translate-y-1.5'} />
-      <BurgerLine animationClass={isOpen && 'opacity-0'} />
-      <BurgerLine animationClass={isOpen ? '-rotate-45' : 'translate-y-1.5'} />
+}) => {
+  const ref = useClickOutside<HTMLButtonElement>(() => setIsOpen(false));
+  return (
+    <div className="aspect-square h-full">
+      <button
+        ref={ref}
+        type="button"
+        className="flex aspect-square h-full items-center justify-center rounded-md bg-action-regular text-gray-800 focus:outline-none"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="sr-only">Open main menu</span>
+        <div className="relative w-4/6">
+          <BurgerLine animationClass={isOpen ? 'rotate-45' : '-translate-y-1.5'} />
+          <BurgerLine animationClass={isOpen && 'opacity-0'} />
+          <BurgerLine animationClass={isOpen ? '-rotate-45' : 'translate-y-1.5'} />
+        </div>
+      </button>
+      <MenuContent isOpen={isOpen} />
     </div>
-  </button>
-);
+  );
+};
 
 const BurgerLine = ({ animationClass }: { animationClass: string | boolean }) => (
   <span aria-hidden="true" className={`absolute block h-0.6 w-full bg-current transition duration-500 ease-in-out ${animationClass}`} />
+);
+
+const MenuContent = ({ isOpen }: {
+  isOpen: boolean;
+}) => (
+  <div className="absolute left-0 w-screen">
+    <div className={`absolute top-2 w-full rounded px-2 md:w-2/4 lg:w-1/4 ${isOpen ? 'flex' : 'hidden'}`}>
+      <div className="flex w-full flex-col whitespace-nowrap rounded bg-action-regular">
+        <NavigationButton title="Home" href="/" />
+        <hr className="border-gray-400" />
+        <NavigationButton title="Trivia" href="/trivia" />
+        <hr className="border-gray-400" />
+        <NavigationButton title="Geography" subTitle="Coming Soon!" href="/geo" disabled />
+      </div>
+    </div>
+  </div>
 );
 
 const ProfileButton = () => {
@@ -73,7 +102,7 @@ const ProfileButton = () => {
 };
 
 const SignInButton = () => (
-  <button type="button" className="h-full rounded-sm bg-amber-200 px-2 font-semibold text-black" onClick={() => signIn('google')}>Sign in</button>
+  <button type="button" className="h-full whitespace-nowrap rounded-sm bg-amber-200 px-2 font-semibold text-black" onClick={() => signIn('google')}>Sign in</button>
 );
 
 const LoadingIcon = () => (
