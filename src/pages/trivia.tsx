@@ -4,6 +4,7 @@ import { NextPage } from 'next';
 import { UseQueryResult } from 'react-query';
 import { TriviaStats } from '@prisma/client';
 import { DefaultErrorShape } from '@trpc/server';
+import Skeleton from 'react-loading-skeleton';
 import useDailyTrivia, { IAnswer, IQuestion } from '../hooks/useDailyTrivia';
 import { Button } from '../components/Buttons';
 
@@ -102,7 +103,7 @@ interface QuestionProps {
 const Question = ({
   question, submitAnswer, correctAnswer, loading, submittedAnswer,
 }: QuestionProps) => (
-  <div className="mx-auto w-11/12">
+  <div className="mx-auto">
     <h1 className={`mb-4 text-xl ${loading && 'text-gray-400'}`}>
       {loading
         ? 'Loading question...'
@@ -135,25 +136,100 @@ Question.defaultProps = {
 const EndScreen = ({ userStatsQuery, resetTrivia }: {
   userStatsQuery: UseQueryResult<TriviaStats | null, DefaultErrorShape>;
   resetTrivia: () => void;
+}) => {
+  const { data: stats, isLoading: statsLoading } = userStatsQuery;
+  const {
+    timesPlayed = 0,
+    streak = 0,
+    maxStreak = 0,
+    correct_1: correct1 = 0,
+    correct_2: correct2 = 0,
+    correct_3: correct3 = 0,
+    lastPlayed,
+  } = stats || {};
+  const highestValue = Math.max(correct1, correct2, correct3);
+  return (
+    <div className="mx-auto w-full">
+      <h1 className="mb-4 text-xl">
+        You have finished all of today&apos;s questions!
+      </h1>
+      <div className="flex flex-col gap-2 rounded-md bg-foreground py-2">
+        <h1 className="text-xl">{
+            !statsLoading && !stats
+              ? 'Not signed in - Stats not tracked'
+              : 'Statistics'
+            }
+        </h1>
+        <div className="flex justify-center gap-3">
+          <KPI value={timesPlayed} label="Played" isLoading={statsLoading} />
+          <KPI value={streak} label="Streak" isLoading={statsLoading} />
+          <KPI value={maxStreak} label="Max Streak" isLoading={statsLoading} />
+        </div>
+        <hr className="my-2 border-background" />
+        <h1 className="text-base"># of Correct Answers Distribution</h1>
+        <div className="mx-4 my-1 flex flex-col gap-1">
+          <Bar legend="1" value={correct1} highestValue={highestValue} isLoading={statsLoading} />
+          <Bar legend="2" value={correct2} highestValue={highestValue} isLoading={statsLoading} />
+          <Bar legend="3" value={correct3} highestValue={highestValue} isLoading={statsLoading} />
+        </div>
+        <hr className="my-2 border-background" />
+        <div className="flex justify-center">
+          <span className="whitespace-nowrap px-1">Last Played:</span>
+          <span className={`${statsLoading && 'w-1/2'}`}>{
+              statsLoading
+                ? <Skeleton baseColor="gray" />
+                : (lastPlayed?.toLocaleString() || 'Not Applicable')
+            }
+          </span>
+        </div>
+      </div>
+      <div className="mt-4">
+        <Button title="Restart Questions" onClick={resetTrivia} />
+      </div>
+    </div>
+  );
+};
+
+const KPI = ({ value, label, isLoading }: {
+  value: number;
+  label: string;
+  isLoading: boolean;
 }) => (
-  <div className="mx-auto w-11/12">
-    <h1 className="mb-4 text-xl">
-      You have finished all of today&apos;s questions!
-    </h1>
-    { userStatsQuery.isLoading
-      ? <div>Loading..</div>
+  <div className="basis-0">
+    <div className="text-3xl text-accent md:text-4xl">{
+    isLoading
+      ? <Skeleton baseColor="gray" />
+      : value
+      }
+    </div>
+    <div className="text-xs">{label}</div>
+  </div>
+);
+
+const Bar = ({
+  legend, value, highestValue, isLoading,
+}: {
+  legend: string;
+  value: number;
+  highestValue: number;
+  isLoading: boolean;
+}) => (
+  <div className="flex">
+    <div className="mr-2 tabular-nums">{legend}</div>
+    <div className="w-full">
+      {
+    isLoading
+      ? <Skeleton baseColor="gray" />
       : (
-        <>
-          <div>Played: {userStatsQuery.data?.timesPlayed}</div>
-          <div>Streak: {userStatsQuery.data?.streak}</div>
-          <div>Max Streak: {userStatsQuery.data?.maxStreak}</div>
-          <div>One Correct: {userStatsQuery.data?.correct_1}</div>
-          <div>Two Correct: {userStatsQuery.data?.correct_2}</div>
-          <div>Three Correct: {userStatsQuery.data?.correct_3}</div>
-          <div>Last Played: {userStatsQuery.data?.lastPlayed.toISOString()}</div>
-        </>
-      )}
-    <Button title="Reset" onClick={resetTrivia} />
+        <div
+          style={{ width: `${Math.max((value / highestValue) * 100, 7)}%` }}
+          className="rounded-r bg-accent px-2 text-right font-semibold text-black"
+        >
+          {value}
+        </div>
+      )
+      }
+    </div>
   </div>
 );
 

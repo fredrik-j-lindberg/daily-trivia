@@ -11,6 +11,7 @@ module.exports = {
       },
       colors: {
         background: colors.gray[800],
+        foreground: colors.gray[700],
         action: {
           regular: colors.amber[200],
           hover: colors.amber[300],
