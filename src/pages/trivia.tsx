@@ -48,7 +48,7 @@ const TriviaQuestion: NextPage = () => {
   };
 
   return (
-    <div className="mx-auto flex h-full w-full flex-col pt-4 text-center text-white md:pt-16 lg:w-6/12">
+    <div className="mx-auto flex h-full w-full flex-col pt-4 text-center text-white md:w-8/12 md:pt-16 lg:w-5/12">
       <ProgressDots answers={answers} questionIndex={questionIndex} />
       {!reachedEnd ? (
         <Question
@@ -103,7 +103,7 @@ interface QuestionProps {
 const Question = ({
   question, submitAnswer, correctAnswer, loading, submittedAnswer,
 }: QuestionProps) => (
-  <div className="mx-auto">
+  <div className="mx-auto w-full">
     <h1 className={`mb-4 text-xl ${loading && 'text-gray-400'}`}>
       {loading
         ? 'Loading question...'
