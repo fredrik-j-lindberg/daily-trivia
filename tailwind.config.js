@@ -22,6 +22,9 @@ module.exports = {
         incorrect: colors.red[400],
         accent: colors.teal[300],
       },
+      screens: {
+        betterhover: { raw: '(hover: hover)' },
+      },
     },
     textColor: {
       accent: colors.teal[300],

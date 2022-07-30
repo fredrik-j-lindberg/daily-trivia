@@ -111,10 +111,10 @@ const Question = ({
     </h1>
     <div className="flex flex-col items-center justify-center gap-2 align-middle md:grid md:grid-cols-2">
       {loading
-        ? new Array(4).fill(null).map((_, index) => <Button key={index} />)
+        ? new Array(4).fill(null).map((_, index) => <Button loading key={index} />)
         : question?.options?.map(({ value: option }, index) => {
           let color;
-          let handleOnClick: any = (_: any, title: string) => submitAnswer(title);
+          let handleOnClick: any = () => submitAnswer(option);
           if (submittedAnswer) {
             const alternativeWasSubmitted = submittedAnswer === option;
             const alternativeIsCorrect = correctAnswer === option;
@@ -123,7 +123,9 @@ const Question = ({
             handleOnClick = undefined;
           }
           return (
-            <Button title={option} onClick={handleOnClick} color={color} key={index} />
+            <Button onClick={handleOnClick} color={color} key={index}>
+              <p className="text-lg font-semibold text-gray-700">{option}</p>
+            </Button>
           );
         })}
     </div>
@@ -184,7 +186,9 @@ const EndScreen = ({ userStatsQuery, resetTrivia }: {
         </div>
       </div>
       <div className="mt-4">
-        <Button title="Restart Questions" onClick={resetTrivia} />
+        <Button onClick={resetTrivia}>
+          <p className="text-lg font-semibold text-gray-700">Restart Questions</p>
+        </Button>
       </div>
     </div>
   );

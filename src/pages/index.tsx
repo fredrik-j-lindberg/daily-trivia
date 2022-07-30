@@ -15,18 +15,22 @@ const Home: NextPage = () => {
       <p className="text-2xl">
         What are you in the mood for today?
       </p>
-      <div className="mt-3 grid gap-3 pt-3 text-center md:grid-cols-2 lg:w-2/3">
-        <NavigationButton
-          title="Trivia"
-          subTitle="Your daily trivia questions"
-          href="/trivia"
-        />
-        <NavigationButton
-          title="Geography"
-          subTitle="Coming soon!"
-          href="/geo"
-          disabled
-        />
+      <div className="mt-6 flex w-full items-center justify-center">
+        <div className="grid w-full gap-3 text-center md:grid-cols-2 lg:w-2/3 xl:w-2/4">
+          <NavigationButton
+            title="Trivia"
+            subTitle="Your daily trivia questions"
+            href="/trivia"
+            paddingClass="p-4"
+          />
+          <NavigationButton
+            title="Geography"
+            subTitle="Coming soon!"
+            href="/geo"
+            disabled
+            paddingClass="p-4"
+          />
+        </div>
       </div>
       {!session && !sessionQuery.isLoading && (
       <p className="mt-4 text-xl italic">
