@@ -27,10 +27,10 @@ const Navbar = () => {
   return (
     <nav className="flex h-12 w-screen items-center gap-2 bg-background p-1 px-2">
       <BurgerMenu isOpen={isOpen} setIsOpen={setIsOpen} />
-      <h1 className="font-['Squada_One'] text-3xl uppercase text-accent">
+      <h1 className="grow font-['Squada_One'] text-3xl uppercase text-accent">
         <Link href="/">Daily trivia </Link>
       </h1>
-      <div className="flex h-full flex-1 justify-end">
+      <div className="flex aspect-square h-full justify-end">
         <ProfileButton />
       </div>
     </nav>
