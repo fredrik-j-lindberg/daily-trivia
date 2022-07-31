@@ -32,7 +32,7 @@ const Navbar = () => {
       <h1 className="grow font-['Squada_One'] text-3xl uppercase leading-none text-accent md:text-4xl">
         <Link href="/">Daily trivia </Link>
       </h1>
-      <div className="flex aspect-square h-full justify-end">
+      <div className="flex h-full justify-end">
         <ProfileButton />
       </div>
     </nav>
@@ -101,5 +101,7 @@ const SignInButton = () => (
 );
 
 const LoadingIcon = () => (
-  <div className="h-full w-full animate-spin rounded-full border-2 border-t-accent" />
+  <div className="aspect-square h-full">
+    <div className="h-full w-full animate-spin rounded-full border-2 border-t-accent" />
+  </div>
 );
