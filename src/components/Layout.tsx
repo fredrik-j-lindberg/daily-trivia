@@ -5,7 +5,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import useClickOutside from '../hooks/useClickOutside';
 import { trpc } from '../utils/trpc';
-import { NavigationButton } from './Buttons';
+import { Button, NavigationButton } from './Buttons';
 
 const Layout = ({ children }: { children: any }) => (
   <>
@@ -46,19 +46,14 @@ const BurgerMenu = ({ setIsOpen, isOpen }: {
   const ref = useClickOutside<HTMLButtonElement>(() => setIsOpen(false));
   return (
     <div className="aspect-square h-full">
-      <button
-        ref={ref}
-        type="button"
-        className="flex aspect-square h-full items-center justify-center rounded-md bg-action-regular text-gray-800 focus:outline-none"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <Button onClick={() => setIsOpen(!isOpen)} paddingClass="p-2" ref={ref}>
         <span className="sr-only">Open main menu</span>
-        <div className="relative w-4/6">
+        <div className="relative">
           <BurgerLine animationClass={isOpen ? 'rotate-45' : '-translate-y-2'} />
           <BurgerLine animationClass={isOpen && 'opacity-0'} />
           <BurgerLine animationClass={isOpen ? '-rotate-45' : 'translate-y-2'} />
         </div>
-      </button>
+      </Button>
       <MenuContent isOpen={isOpen} />
     </div>
   );

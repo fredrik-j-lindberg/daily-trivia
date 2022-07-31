@@ -21,14 +21,14 @@ const Home: NextPage = () => {
             title="Trivia"
             subTitle="Your daily trivia questions"
             href="/trivia"
-            paddingClass="p-4"
+            paddingClass="p-8"
           />
           <NavigationButton
             title="Geography"
             subTitle="Coming soon!"
             href="/geo"
             disabled
-            paddingClass="p-4"
+            paddingClass="p-8"
           />
         </div>
       </div>
