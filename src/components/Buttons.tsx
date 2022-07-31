@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   forwardRef, MouseEvent, ReactNode, useState,
@@ -93,3 +94,32 @@ export const BurgerDropDown = ({ children }: {
 const BurgerLine = ({ animationClass }: { animationClass: string | boolean }) => (
   <span aria-hidden="true" className={`absolute block h-0.8 w-full bg-current transition duration-500 ease-in-out ${animationClass}`} />
 );
+
+export const ProfileMenu = ({ imageUrl, children }: {
+  imageUrl: string;
+  children: ReactNode;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useClickOutside<HTMLButtonElement>(() => setIsOpen(false));
+  return (
+    <div className="aspect-square h-full">
+      <button
+        ref={ref}
+        type="button"
+        className="relative aspect-square h-full overflow-hidden rounded-full"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Image
+          layout="fill"
+          objectFit="contain"
+          src={imageUrl}
+        />
+      </button>
+      <div className="absolute right-0 z-30 w-screen p-2">
+        <div className={`ml-auto w-full min-w-[300px] rounded sm:w-1/3 ${isOpen ? 'flex' : 'hidden'} shadow-2xl shadow-background`}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};

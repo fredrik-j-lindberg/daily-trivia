@@ -1,10 +1,11 @@
 import { signIn, signOut } from 'next-auth/react';
 import Head from 'next/head';
-import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { trpc } from '../utils/trpc';
-import { BurgerDropDown, Button, NavigationButton } from './Buttons';
+import {
+  BurgerDropDown, Button, NavigationButton, ProfileMenu,
+} from './Buttons';
 
 const Layout = ({ children }: { children: any }) => (
   <>
@@ -54,21 +55,19 @@ const ProfileButton = () => {
   if (!session) return <SignInButton />;
 
   return (
-    <div className="aspect-square h-full">
-      <button type="button" className="relative aspect-square h-full overflow-hidden rounded-full" onClick={() => signOut()}>
-        <Image
-          layout="fill"
-          objectFit="contain"
-          src={session.user?.image as string}
-        />
-      </button>
-    </div>
+    <ProfileMenu imageUrl={session.user?.image as string}>
+      <div className="flex w-full flex-col whitespace-nowrap rounded bg-action-regular">
+        <Button onClick={() => signOut()}>
+          Sign Out
+        </Button>
+      </div>
+    </ProfileMenu>
   );
 };
 
 const SignInButton = () => (
   <Button onClick={() => signIn('google')} paddingClass="p-2">
-    <p className="flex h-full items-center whitespace-nowrap px-2 font-semibold leading-none text-gray-700">Sign in</p>
+    <p className="flex h-full items-center whitespace-nowrap px-2 font-semibold leading-none text-gray-700">Sign In</p>
   </Button>
 );
 
