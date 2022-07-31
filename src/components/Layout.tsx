@@ -86,18 +86,22 @@ const ProfileButton = () => {
   if (!session) return <SignInButton />;
 
   return (
-    <button type="button" className="relative aspect-square h-full overflow-hidden rounded-full" onClick={() => signOut()}>
-      <Image
-        layout="fill"
-        objectFit="contain"
-        src={session.user?.image as string}
-      />
-    </button>
+    <div className="aspect-square h-full">
+      <button type="button" className="relative aspect-square h-full overflow-hidden rounded-full" onClick={() => signOut()}>
+        <Image
+          layout="fill"
+          objectFit="contain"
+          src={session.user?.image as string}
+        />
+      </button>
+    </div>
   );
 };
 
 const SignInButton = () => (
-  <button type="button" className="h-full whitespace-nowrap rounded-sm bg-amber-200 px-2 font-semibold text-black" onClick={() => signIn('google')}>Sign in</button>
+  <Button onClick={() => signIn('google')} paddingClass="p-2">
+    <p className="flex h-full items-center whitespace-nowrap px-2 font-semibold leading-none text-gray-700">Sign in</p>
+  </Button>
 );
 
 const LoadingIcon = () => (
