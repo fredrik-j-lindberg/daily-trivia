@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import {
-  forwardRef, MouseEvent, ReactNode,
+  forwardRef, MouseEvent, ReactNode, useState,
 } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import useClickOutside from '../hooks/useClickOutside';
 
 export const Button = forwardRef<HTMLButtonElement, {
   children?: ReactNode;
@@ -64,3 +65,31 @@ NavigationButton.defaultProps = {
   subTitle: null,
   paddingClass: 'p-4',
 };
+
+export const BurgerDropDown = ({ children }: {
+  children: ReactNode;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useClickOutside<HTMLButtonElement>(() => setIsOpen(false));
+  return (
+    <div className="aspect-square h-full">
+      <Button onClick={() => setIsOpen(!isOpen)} paddingClass="p-2" ref={ref}>
+        <span className="sr-only">Open main menu</span>
+        <div className="relative">
+          <BurgerLine animationClass={isOpen ? 'rotate-45' : '-translate-y-2'} />
+          <BurgerLine animationClass={isOpen && 'opacity-0'} />
+          <BurgerLine animationClass={isOpen ? '-rotate-45' : 'translate-y-2'} />
+        </div>
+      </Button>
+      <div className="absolute left-0 z-30 w-screen p-2">
+        <div className={`w-full min-w-[300px] rounded sm:w-1/3 ${isOpen ? 'flex' : 'hidden'} shadow-2xl shadow-background`}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BurgerLine = ({ animationClass }: { animationClass: string | boolean }) => (
+  <span aria-hidden="true" className={`absolute block h-0.8 w-full bg-current transition duration-500 ease-in-out ${animationClass}`} />
+);
