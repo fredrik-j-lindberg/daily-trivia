@@ -10,12 +10,9 @@ import { Button } from '../components/Buttons';
 
 const MS_BEFORE_NEXT_QUESTION = 1500;
 
-// TODO: Add some kind of scoring system (how many 1, 2, 3 correct answers you have gotten?)
 // TODO: Add celebration animation when answering all 3 correctly
 // TODO: Add a way to go back to a previous question
-// TODO: Store user answered questions somewhere (only repeat questions not yet answered correctly?)
-// TODO: Simple logo somewhere?
-// TODO: Host somewhere
+// TODO: Change from random questions to specific daily questions (same for everyone)
 
 const TriviaQuestion: NextPage = () => {
   const [questionIndex, setQuestionIndex] = useState(0);
